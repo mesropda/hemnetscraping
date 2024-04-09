@@ -14,7 +14,7 @@ body {
 }
 
 .Container {
-    max-width: 660px;
+    max-width: 650px;
     padding: 28px;
     margin: 0 28px;
     border-radius: 10px;
@@ -45,14 +45,6 @@ h2 {
     padding: 20px 0;
 }
 
-.radio-content {
-    width: 50%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 10px 0;
-}
-
 .inactive-div {
     opacity: 0.3;
     pointer-events: none;
@@ -74,17 +66,6 @@ h2 {
     color: white;
     font-weight: bold;
     margin: 5px 0;
-}
-
-.sale-category-input label {
-    color: white;
-    font-weight: bold;
-    margin: 5px 0;
-}
-
-.sale-category-input,
-.sale-category-input label {
-    cursor: pointer;
 }
 
 .input-box input {
@@ -109,7 +90,7 @@ h2 {
     margin-top: 10px;
     padding: 10px;
     display: block;
-    font-size: 23px;
+    font-size: 20px;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -120,38 +101,6 @@ h2 {
 
 .button-container button:hover {
     background-image: linear-gradient(to right, #61045f, #aa076b);
-}
-
-ul {
-    width: auto;
-    margin-top: 67px;
-    position: absolute;
-    z-index: 1;
-    list-style: none;
-
-}
-
-.list {
-    padding-left: 10px;
-    background-color: white;
-    border-radius: 0 0 5px 5px;
-
-}
-
-.list-items {
-    padding: 0px;
-}
-
-.list-items:hover {
-    background-color: #dddddd;
-}
-
-.message_alert {
-
-    margin: auto;
-    color: #EF23AF;
-    font-size: 14px;
-    font-family: Verdana;
 }
 
 @media(max-height:800px) {
@@ -169,10 +118,6 @@ ul {
     .content {
         max-height: 380px;
         overflow: auto;
-    }
-
-    .radio-content {
-        width: 100%;
     }
 
     .input-box {

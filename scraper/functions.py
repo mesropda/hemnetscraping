@@ -8,9 +8,18 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'}
 
 
-def getHemnetUrls():
+def getHemnetUrls(url):
+    """ final prices
+          "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744&page=50"
+    url = "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744"
+    """
+    # url = "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744"
 
+    """ For sale currently
     url = "https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744"
+
+    """
+
     urls = [url]
 
     html_text = requests.get(url, headers=headers).text
@@ -24,7 +33,8 @@ def getHemnetUrls():
     # creating urls for each pagination, starting from 1 because the 21 page is providded above, it is the "url"
     for i in range(2, number_of_pages+1):
         urls.append(
-            f'https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744&page={i}')
+            f'{url}&page={i}')
+        # f'https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744&page={i}') the link for appartments ofr sale
     print(len(urls))
     return urls
 
@@ -60,12 +70,10 @@ def listingsPerPage(url, filter=None):
         address = listing.find(
             'div', class_='Location_address___eOo4').text
         currentListing.address = address
-
         attributes = listing.find_all(
             'div', class_='hcl-grid__item ForSaleAttributes_item__GT4Ro')
 
         for attribute in attributes:
-
             if 'kr/m²' in attribute.text:
                 pass
             elif 'kr/mån' in attribute.text:
@@ -92,7 +100,7 @@ def listingsPerPage(url, filter=None):
             filter_results = filterListings(currentListing, filter)
             if filter_results != None:
                 pageListings.append(filter_results)
-        else:
+        elif currentListing.price != None:
             pageListings.append(currentListing)
 
     return pageListings
@@ -147,3 +155,45 @@ def filterListings(listing: Listing, filter: FilteringSettings):
 
 # def filterListings(listing, address=None, maxfee=None, minrooms=None, maxrooms=None, minarea=None, maxarea=None):
 #     filter=FilteringSettings(address, maxfee, minrooms, maxrooms, minarea, maxarea)
+
+
+def soldListingsPerPage(url, filter=None):
+
+    pageListings = []
+
+    html_page = requests.get(url, headers=headers).text
+    soup = BeautifulSoup(html_page, 'lxml')
+    listings = soup.find_all(
+        'div', class_='hcl-grid hcl-grid--columns-1 hcl-grid--md-columns-2')
+
+    for listing in listings:
+        currentListing = Listing()
+
+        address = listing.find(
+            'div', class_='Location_address___eOo4').text
+        currentListing.address = address
+
+        attributes = listing.find_all(
+            'div', class_='hcl-flex--container hcl-flex--gap-2 hcl-flex--justify-space-between hcl-flex--md-justify-flex-start')
+
+        currentListing.monthlyFee = extractprice(
+            attributes[0].find('span', class_='hcl-text'))
+        area_and_rooms = attributes[0].find_all(
+            'p', class_='hcl-text hcl-text--medium')
+        for item in area_and_rooms:
+            if 'm²' in item.text:
+                currentListing.area = extractNumbers(item)
+            elif 'rum' in item.text:
+                currentListing.roomNumber = extractNumbers(item)
+
+        currentListing.price = extractprice(attributes[1])
+
+        if filter != None:
+            filter_results = filterListings(currentListing, filter)
+            if filter_results != None:
+                pageListings.append(filter_results)
+        elif currentListing.price != None:
+            pageListings.append(currentListing)
+            print(currentListing)
+
+    return pageListings

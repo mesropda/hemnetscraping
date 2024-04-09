@@ -10,60 +10,104 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <!--<link rel="stylesheet" type="text/css" href="styles.css"> Uncomment for real work-->
+
 </head>
 
 <body>
-    <div class="Container" id="app">
+    <div class="Container">
+        <div style="color:white">
+            <p class="h2">Start by fatching data from the hemnet.se.</p>
+        </div>
+        {%if messages%}
+        {% for message in messages %}
+        <div class="message_alert align_center" role="alert">
+            {{message}}
+            <br>
+        </div>
+        {% endfor %}
+
+        {%endif%}
         <form action="" method="post">{%csrf_token%}
-            <h2>Please enter your search criteris to get the average price of appartments in different districts in Stockholm area!</h2>
-            <div class="content">
+            <div class="radio-content">
+                <div class="sale-category-input">
+                    <input type="radio" name="category" id="listed" value="listed">
+                    <label for="listed">Currently listed</label>
+                    <input type="radio" name="category" id="sold" value="sold">
+                    <label for="sold">Final prices</label>
+                </div>
+
+            </div>
+
+            <div class="button-container">
+                <button type="submit" id="fetch-button">Fatch data </button>
+            </div>
+            <div class="fetched-data" id="fetched-data">
+                <p class="h2" style="font-size:23px ;">{{message}}</p>
+            </div>
+        </form>
+
+
+        <form action="" method="post">{%csrf_token%}
+            <h2 id="filter-criteris-text" class="inactive-div">Enter your search criterias below to get the average price of appartments in different districts
+                in Stockholm area!</h2>
+
+
+            <div id="content-div" class="content inactive-div">
 
                 <div class="input-box">
                     <label for="address">Area</label>
-                    <input type="text" placeholder="Select area/district" name="address">
+                    <input type="text" id="address" placeholder="Enter area/district" name="address">
+                    <ul class="list"></ul>
                 </div>
 
                 <div class="input-box">
                     <label for="maxfee">Max monthly fee</label>
-                    <input type="text" placeholder="Max fee" name="maxfee">
+                    <input type="text" id="maxfee" placeholder="Max fee" name="maxfee">
                 </div>
 
                 <div class="input-box">
                     <label for="minrooms">Min rooms</label>
-                    <input type="text" placeholder="Min rooms" name="minrooms">
+                    <input type="text" id="minrooms" placeholder="Min rooms" name="minrooms">
                 </div>
 
                 <div class="input-box">
                     <label for="maxrooms">Max rooms</label>
-                    <input type="text" placeholder="Max rooms" name="maxrooms">
+                    <input type="text" id="maxrooms" placeholder="Max rooms" name="maxrooms">
                 </div>
 
                 <div class="input-box">
                     <label for="minarea">Min area</label>
-                    <input type="text" placeholder="Min area" name="minarea">
+                    <input type="text" id="minarea" placeholder="Min area" name="minarea">
                 </div>
 
                 <div class="input-box">
                     <label for="maxarea">Max area</label>
-                    <input type="text" placeholder="Max area" name="maxarea">
+                    <input type="text" id="maxarea" placeholder="Max area" name="maxarea">
                 </div>
             </div>
-            <div class="button-container">
-                <button type="submit">Show avegare price</button>
-            </div>
-        </form>
 
-        <div>
-            <p>The average price is {{price}} SEK and the number of listings is {{listings_length}} </p>
+
+        </form>
+        <div id="filter-button" class="button-container inactive-div" style="margin-top: -15px;">
+            <button id="show-avergae" type="submit">Show avegare price</button>
         </div>
+
+        <div id="results-div" style="color:white; font-size: 20px; font-weight: bold; margin-bottom: -30px;">
+
+        </div>
+
     </div>
 
-
+    <!--
     <script scr="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.cjs.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-
+    -->
+    <script id="json_data" type="application/json">
+        {{ listings|safe }}
+    </script>
+    <script src="/static/JavaScript/handeljson.js"></script>
 </body>
 
 </html>
