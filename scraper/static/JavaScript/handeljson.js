@@ -3,43 +3,8 @@ var jsonDataScript = document.getElementById("json_data");
 var listings = JSON.parse(jsonDataScript.textContent);
 console.log(listings[0]);
 
-let locations = [];
-for (let listing of listings) {
-    if (locations.includes(listing['address'])) { }
-    else locations.push(listing['address']);
-}
-//console.log(locations);
-
-
-
-// for (let listing of listings) {
-//     console.log(listing['address']);
-//     let words = listing['address'].split(' ');
-//     console.log(words);
-//     for (let word of words) {
-//         word = word.replace(new RegExp(/[,/-]/g), '');
-//         console.log(word)
-//         if (locations.includes(word.toLocaleLowerCase()) || word.includes('kommun') || word.includes('gård') || word.includes('forum') ) { }
-//         else locations.push(word.toLocaleLowerCase());
-//     }
-//}
-
-
-
-if (listings.length > 0) {
-    let fetchedData = document.querySelector("#fetched-data");
-    if (fetchedData.style.display === "" || fetchedData.style.display === "none") {
-        fetchedData.style.display = "block";
-    }
-
-    let contentDiv = document.querySelector("#content-div");
-    let filterCriterisText = document.querySelector("#filter-criteris-text");
-    let filterButton = document.querySelector("#filter-button");
-    contentDiv.classList.remove("inactive-div");
-    filterCriterisText.classList.remove("inactive-div");
-    filterButton.classList.remove("inactive-div");
-}
-
+var databaseType = document.getElementById("databaseType");
+var dataType = JSON.parse(databaseType.textContent);
 
 let address = document.querySelector("#address");
 let maxfee = document.querySelector("#maxfee");
@@ -50,6 +15,42 @@ let maxarea = document.querySelector("#maxarea");
 let resultsDiv = document.querySelector("#results-div");
 let showAvergae = document.querySelector("#show-avergae");
 let fetchButton = document.querySelector("#fetch-button");
+let startDate = document.querySelector("#start-date")
+let endDate = document.querySelector("#end-date")
+
+
+
+let locations = [];
+for (let listing of listings) {
+    if (locations.includes(listing['address'])) { }
+    else locations.push(listing['address']);
+}
+
+if (listings.length > 0) {
+    let fetchedData = document.querySelector("#fetched-data");
+    if (fetchedData.style.display === "" || fetchedData.style.display === "none") {
+        fetchedData.style.display = "block";
+    };
+
+    let contentDiv = document.querySelector("#content-div");
+    let filterCriterisText = document.querySelector("#filter-criteris-text");
+    let filterButton = document.querySelector("#filter-button");
+    contentDiv.classList.remove("inactive-div");
+    filterCriterisText.classList.remove("inactive-div");
+    filterButton.classList.remove("inactive-div");
+
+    if (dataType['type'] == "sold") {
+        let dateFilters = document.querySelectorAll('#filter-by-date');
+        for (let dateFilter of dateFilters) {
+            if (dateFilter.style.display === "" || dateFilter.style.display === "none") {
+                dateFilter.style.display = "block";
+            };
+        }
+    };
+
+}
+
+
 
 address.addEventListener('keyup', (e) => {
 
@@ -74,6 +75,13 @@ address.addEventListener('keyup', (e) => {
     }
 });
 
+document.body.addEventListener('click', function (event) {
+    if (event.target != address) {
+        removeElements();
+    }
+});
+
+
 function removeElements() {
     let items = document.querySelectorAll('.list-items');
     items.forEach((item) => {
@@ -86,11 +94,6 @@ function displayLocations(value) {
     removeElements();
 };
 
-document.body.addEventListener('click', function (event) {
-    if (event.target != address) {
-        removeElements();
-    }
-});
 
 function checkListing(listing) {
     if (address.value == "") { }
@@ -115,6 +118,14 @@ function checkListing(listing) {
 
     if (maxarea.value == "") { }
     else if (listing['area'] <= parseInt(maxarea.value)) { }
+    else return null;
+
+    if (startDate.value == "") { }
+    else if (new Date(listing['sell_date']) >= new Date((startDate.value))) { }
+    else return null;
+
+    if (endDate.value == "") { }
+    else if (new Date(listing['sell_date']) >= new Date((endDate.value))) { }
     else return null;
 
     return listing;
@@ -150,7 +161,7 @@ function displayResults(listings) {
     average_price = 0;
     number_of_lisings = 0;
 
-    if (address.value !== "" || maxfee.value !== "" || minrooms.value !== "" || maxrooms.value !== "" || minarea.value !== "" || maxarea.value !== "") {
+    if (address.value !== "" || maxfee.value !== "" || minrooms.value !== "" || maxrooms.value !== "" || minarea.value !== "" || maxarea.value !== "" || startDate.value !== "" || endDate.value !== 0) {
 
         results = filter(listings);
         average_price = results['averge-price'];

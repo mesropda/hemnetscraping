@@ -36,6 +36,38 @@
                     <input type="radio" name="category" id="sold" value="sold">
                     <label for="sold">Final prices</label>
                 </div>
+                <div class="select-box">
+                    <label for="kommun">Kommun</label>
+                    <select name="kommun" id="kommin-id">
+                        <option value=""> </option>
+                        <option value="Botkyrka">Botkyrka</option>
+                        <option value="Danderyd">Danderyd</option>
+                        <option value="Ekerö">Ekerö</option>
+                        <option value="Haninge">Haninge</option>
+                        <option value="Huddinge">Huddinge</option>
+                        <option value="Järfälla">Järfälla</option>
+                        <option value="Lidingö">Lidingö</option>
+                        <option value="Nacka">Nacka</option>
+                        <option value="Norrtälje">Norrtälje</option>
+                        <option value="Nykvarn">Nykvarn</option>
+                        <option value="Nynäshamn">Nynäshamn</option>
+                        <option value="Österåker">Österåker</option>
+                        <option value="Salem">Salem</option>
+                        <option value="Sigtuna">Sigtuna</option>
+                        <option value="Södertälje">Södertälje</option>
+                        <option value="Sollentuna">Sollentuna</option>
+                        <option value="Solna">Solna</option>
+                        <option value="Stockholm">Stockholm</option>
+                        <option value="Sundbyberg">Sundbyberg</option>
+                        <option value="Täby">Täby</option>
+                        <option value="Tyresö">Tyresö</option>
+                        <option value="Upplands-Väsby">Upplands Väsby</option>
+                        <option value="Upplands-Bro">Upplands-Bro</option>
+                        <option value="Vallentuna">Vallentuna</option>
+                        <option value="Värmdö">Värmdö</option>
+                        <option value="Vaxholm">Vaxholm</option>
+                    </select>
+                </div>
 
             </div>
 
@@ -50,7 +82,7 @@
 
         <form action="" method="post">{%csrf_token%}
             <h2 id="filter-criteris-text" class="inactive-div">Enter your search criterias below to get the average price of appartments in different districts
-                in Stockholm area!</h2>
+                {{kommun}}!</h2>
 
 
             <div id="content-div" class="content inactive-div">
@@ -85,6 +117,15 @@
                     <label for="maxarea">Max area</label>
                     <input type="text" id="maxarea" placeholder="Max area" name="maxarea">
                 </div>
+                <div class="input-box diplay-none" id="filter-by-date">
+                    <label for="start-date">Sold: From</label>
+                    <input type="date" id="start-date" placeholder="Start date" name="start-date">
+                </div>
+
+                <div class="input-box diplay-none" id="filter-by-date">
+                    <label for="end-date">Sold: To</label>
+                    <input type="date" id="end-date" placeholder="Date-to" name="end-date">
+                </div>
             </div>
 
 
@@ -106,6 +147,9 @@
     -->
     <script id="json_data" type="application/json">
         {{ listings|safe }}
+    </script>
+    <script id="databaseType" type="application/json">
+        {{dataType|safe}}
     </script>
     <script src="/static/JavaScript/handeljson.js"></script>
 </body>

@@ -1,7 +1,7 @@
 
 
 class Listing:
-    def __init__(self, address=None, price=None, area=None, roomNumber=None, floor=None, monthlyFee=None):
+    def __init__(self, address=None, price=None, area=None, roomNumber=None, floor=None, monthlyFee=None, sell_date=None):
 
         self.address = address
         self.price = price
@@ -9,9 +9,10 @@ class Listing:
         self.roomNumber = roomNumber
         self.floor = floor
         self.monthlyFee = monthlyFee
+        self.sell_date = sell_date
 
     def __str__(self):
-        return f"Address: {self.address}\nPrice (Kr): {self.price}\nArea (m²): {self.area}\nNumber of rooms: {self.roomNumber}\nFloor: {self.floor}\nMonthly fee (Kr): {self.monthlyFee}\n"
+        return f"Address: {self.address}\nPrice (Kr): {self.price}\nArea (m²): {self.area}\nNumber of rooms: {self.roomNumber}\nFloor: {self.floor}\nMonthly fee (Kr): {self.monthlyFee}\nSold on: {self.sell_date}"
 
 
 class FilteringSettings:

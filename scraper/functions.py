@@ -3,21 +3,13 @@ from bs4 import BeautifulSoup
 import requests
 import re
 from .myClasses import Listing, FilteringSettings
+from dateutil import parser
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'}
 
 
 def getHemnetUrls(url, index):
-    """ final prices
-          "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744&page=50"
-    url = "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744"
-    """
-
-    """ For sale currently
-    url = "https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744"
-
-    """
 
     urls = [url]
 
@@ -27,13 +19,15 @@ def getHemnetUrls(url, index):
     # getting the number of pages in pagination
     paginator = base_soup.find_all(
         'a', class_='hcl-button hcl-button--secondary')
-    number_of_pages = int(paginator[index].text)
-    # creating urls for each pagination, starting from 1 because the 21 page is providded above, it is the "url"
-    # for i in range(2, 6):
-    for i in range(2, number_of_pages+1):
-        urls.append(
-            f'{url}&page={i}')
-        # f'https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744&page={i}') the link for appartments ofr sale
+    # chek the number of pages to avoud index out of range error when there is only 1 page
+    if len(paginator) >= 2:
+        number_of_pages = int(paginator[index].text)
+        # creating urls for each pagination, starting from 1 because the 1 page is providded above, it is the "url"
+        # for i in range(2, 2):
+        for i in range(2, number_of_pages+1):
+            urls.append(
+                f'{url}&page={i}')
+            # f'https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744&page={i}') the link for appartments ofr sale
     print(f"Found {len(urls)} URLs")
     return urls
 
@@ -52,6 +46,21 @@ def extractNumbers(attribute):
         return float(number)
     else:
         return int(number)
+
+
+def extractDate(listing):
+    date = listing.find(
+        'span', class_="hcl-label hcl-label--state hcl-label--sold-at").text
+    # print(f"Extracted text is: {date}")
+
+    if 'okt' or 'Okt' in date:
+        date = date.replace('k', 'c')  # replace for swedish "Okt" with "oct"
+    if 'maj' in date:
+        date = date.replace('j', 'y')  # replace for swedish "Maj" with "May"
+
+    date = str(parser.parse(date, fuzzy=True).date())
+    # print(f"Date format: {date}\n")
+    return date
 
 
 def listingsPerPage(url, filter=None):
@@ -166,6 +175,9 @@ def soldListingsPerPage(url, filter=None):
             'div', class_='Location_address___eOo4').text
         currentListing.address = address
 
+        currentListing.sell_date = extractDate(listing)
+
+        # Get more attributes from listing elemets (for room, area adn monthly fee extraction)
         attributes = listing.find_all(
             'div', class_='hcl-flex--container hcl-flex--gap-2 hcl-flex--justify-space-between hcl-flex--md-justify-flex-start')
 
