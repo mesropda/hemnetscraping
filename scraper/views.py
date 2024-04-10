@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .functions import listingsPerPage, soldListingsPerPage
+from .functions import listingsPerPage, soldListingsPerPage, getHemnetUrls
 from django.contrib import messages
 import json
 
@@ -17,13 +17,29 @@ def home_page(request):
         sold_listings_url = "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744"
 
         if request.POST.get('category') == "listed":
-            url = current_listings_url
-            listings = listingsPerPage(url)
+            # url = current_listings_url
+            listings = []
+            # paginator index it should be different for sold page and current listings page
+            page_index = -2
+            urls = getHemnetUrls(current_listings_url, page_index)
+            i = 0
+            for url in urls:
+                i += 1
+                print(f"Fatching page #{i}")
+                listings += listingsPerPage(url)
             message1 = "Currently there are"
             message2 = "listings in Stockholm area."
         elif request.POST.get('category') == "sold":
-            url = sold_listings_url
-            listings = soldListingsPerPage(url)
+            # url = sold_listings_url
+            listings = []
+            # paginator index it should be different for sold page and current listings page
+            page_index = -1
+            urls = getHemnetUrls(sold_listings_url, page_index)
+            i = 0
+            for url in urls:
+                i += 1
+                print(f"Fatching page #{i}")
+                listings += soldListingsPerPage(url)
             message1 = "Total of"
             message2 = "final prices found."
         else:
@@ -45,7 +61,7 @@ def home_page(request):
         # print(f"{len(urls)} urls found")
         # listings = []
         # for url in urls:
-        #     listings += listingsPerPage(url)
+        #    listings += listingsPerPage(url)
 
         total = 0
         numberOfListings = len(listings)

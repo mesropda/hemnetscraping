@@ -8,12 +8,11 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'}
 
 
-def getHemnetUrls(url):
+def getHemnetUrls(url, index):
     """ final prices
           "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744&page=50"
     url = "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744"
     """
-    # url = "https://www.hemnet.se/salda/bostader?item_types=bostadsratt&location_ids=17744"
 
     """ For sale currently
     url = "https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744"
@@ -28,22 +27,21 @@ def getHemnetUrls(url):
     # getting the number of pages in pagination
     paginator = base_soup.find_all(
         'a', class_='hcl-button hcl-button--secondary')
-    number_of_pages = int(paginator[-2].text)
-
+    number_of_pages = int(paginator[index].text)
     # creating urls for each pagination, starting from 1 because the 21 page is providded above, it is the "url"
+    # for i in range(2, 6):
     for i in range(2, number_of_pages+1):
         urls.append(
             f'{url}&page={i}')
         # f'https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744&page={i}') the link for appartments ofr sale
-    print(len(urls))
+    print(f"Found {len(urls)} URLs")
     return urls
 
 
 def extractprice(attribute):
     string = attribute.text.replace("\xa0", "")
-    digits = re.search(r'\d+', string)
-    digitsGrouped = digits.group()
-    return int(digitsGrouped)
+    digits = re.search(r'\d+', string).group()
+    return int(digits)
 
 
 def extractNumbers(attribute):
@@ -153,10 +151,6 @@ def filterListings(listing: Listing, filter: FilteringSettings):
     return listing
 
 
-# def filterListings(listing, address=None, maxfee=None, minrooms=None, maxrooms=None, minarea=None, maxarea=None):
-#     filter=FilteringSettings(address, maxfee, minrooms, maxrooms, minarea, maxarea)
-
-
 def soldListingsPerPage(url, filter=None):
 
     pageListings = []
@@ -165,7 +159,6 @@ def soldListingsPerPage(url, filter=None):
     soup = BeautifulSoup(html_page, 'lxml')
     listings = soup.find_all(
         'div', class_='hcl-grid hcl-grid--columns-1 hcl-grid--md-columns-2')
-
     for listing in listings:
         currentListing = Listing()
 
@@ -176,10 +169,13 @@ def soldListingsPerPage(url, filter=None):
         attributes = listing.find_all(
             'div', class_='hcl-flex--container hcl-flex--gap-2 hcl-flex--justify-space-between hcl-flex--md-justify-flex-start')
 
-        currentListing.monthlyFee = extractprice(
-            attributes[0].find('span', class_='hcl-text'))
+        if attributes[0].find('span', class_='hcl-text'):
+            currentListing.monthlyFee = extractprice(
+                attributes[0].find('span', class_='hcl-text'))
+
         area_and_rooms = attributes[0].find_all(
             'p', class_='hcl-text hcl-text--medium')
+
         for item in area_and_rooms:
             if 'm²' in item.text:
                 currentListing.area = extractNumbers(item)
@@ -194,6 +190,6 @@ def soldListingsPerPage(url, filter=None):
                 pageListings.append(filter_results)
         elif currentListing.price != None:
             pageListings.append(currentListing)
-            print(currentListing)
+            # print(currentListing)
 
     return pageListings

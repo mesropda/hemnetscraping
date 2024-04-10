@@ -135,6 +135,8 @@ ul {
     padding-left: 10px;
     background-color: white;
     border-radius: 0 0 5px 5px;
+    max-height: 200px;
+    overflow-y: auto;
 
 }
 
