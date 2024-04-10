@@ -43,7 +43,7 @@ if (listings.length > 0) {
         let dateFilters = document.querySelectorAll('#filter-by-date');
         for (let dateFilter of dateFilters) {
             if (dateFilter.style.display === "" || dateFilter.style.display === "none") {
-                dateFilter.style.display = "block";
+                dateFilter.style.display = "flex";
             };
         }
     };

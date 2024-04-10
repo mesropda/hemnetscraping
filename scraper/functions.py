@@ -23,8 +23,8 @@ def getHemnetUrls(url, index):
     if len(paginator) >= 2:
         number_of_pages = int(paginator[index].text)
         # creating urls for each pagination, starting from 1 because the 1 page is providded above, it is the "url"
-        # for i in range(2, 2):
-        for i in range(2, number_of_pages+1):
+        for i in range(2, 2):
+            # for i in range(2, number_of_pages+1):
             urls.append(
                 f'{url}&page={i}')
             # f'https://www.hemnet.se/bostader?item_types%5B%5D=bostadsratt&location_ids%5B%5D=17744&page={i}') the link for appartments ofr sale
