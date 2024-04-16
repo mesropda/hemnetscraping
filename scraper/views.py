@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from .functions import listingsPerPage, soldListingsPerPage, getHemnetUrls
 from django.contrib import messages
+from .models import Contact
 import json
 from .kommunURLs import listedURL, soldURL
 
@@ -33,8 +35,7 @@ def home_page(request):
                 page_number += 1
                 print(f"Fatching page #{page_number}")
                 listings += listingsPerPage(url)
-            message1 = "Currently there are"
-            message2 = f"listings in {kommun} kommun."
+            message1 = f"appartments for sale in {kommun} kommun."
             dataType['type'] = 'listed'
 
         elif request.POST.get('category') == "sold" and kommun != '':
@@ -49,8 +50,7 @@ def home_page(request):
                 page_number += 1
                 print(f"Fatching page #{page_number}")
                 listings += soldListingsPerPage(url)
-            message1 = "Total of"
-            message2 = f"final prices found in {kommun} kommun."
+            message1 = f"appartment final prices found in {kommun} kommun."
             dataType['type'] = 'sold'
         else:
             messages.success(
@@ -75,7 +75,7 @@ def home_page(request):
 
             averagePrice = total/numberOfListings
 
-            context = {'message': f"{message1} {str(numberOfListings)} {message2}",
+            context = {'message': f"{str(numberOfListings)} {message1}",
                        'listings': json.dumps(listings_dictionary, indent=2),
                        'kommun': f"{kommun} kommun",
                        'dataType': json.dumps(dataType),
@@ -85,3 +85,23 @@ def home_page(request):
     else:
         context = {}
     return render(request, "home.html", context)
+
+
+def contact_us(request):
+    print("I am here")
+    if request.method == "POST":
+        new_contact = Contact.objects.create(
+            name=request.POST['name'],
+            email=request.POST['email'],
+            message=request.POST['message'],
+        )
+        message={
+            'line1':"Thank you for contacting us.",
+            'line2':"We will get back to you as soon as poosble!",
+            }
+        print(message)
+    else:
+        message={}
+
+    return render (request, "contact-success.html",message)
+

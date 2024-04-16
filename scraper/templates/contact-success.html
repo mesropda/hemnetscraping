@@ -1,0 +1,35 @@
+{%extends 'base.html'%}
+<link rel="stylesheet" type="text/css" href="style.css">
+{%block content%}
+
+<style>
+    .margin-20 {
+        margin-top: -20%;
+    }
+
+    .go-home a {
+        text-decoration: none;
+        color: white;
+    }
+
+    @media(max-height:600px) {
+        .margin-20 {
+            margin-top: 0;
+        }
+    }
+</style>
+
+<div class="box" id="box">
+    <div class="Container margin-20">
+        <div class="responce-message" style="color:white">
+            <p class="h3">{{line1}}</p>
+            <p class="h3">{{line2}}</p>
+        </div>
+        <div class="button-container go-home">
+            <button id="privacy-btn"> <a href="{%url 'scraper:home'%}">Back to home page</a></button>
+        </div>
+
+    </div>
+</div>
+
+{%endblock%}

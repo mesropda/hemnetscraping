@@ -5,15 +5,102 @@
     box-sizing: border-box;
 }
 
+.frozen {
+    pointer-events: none;
+    /* Disable pointer events */
+    opacity: 0.7;
+    /* Reduce opacity to visually indicate it's inactive */
+}
+
 body {
-    display: flex;
-    justify-content: center;
+
     height: 100vh;
     align-items: center;
     background-image: linear-gradient(#380036, #0CBABA);
 }
 
+.nav {
+    padding-top: 5px;
+    justify-content: center;
+}
+
+.nav span:hover {
+    cursor: pointer;
+    color: #0CBABA;
+
+}
+
+.popup-container {
+    position: absolute;
+    width: 100%;
+    height: 95%;
+    overflow: hidden;
+    margin: 0 28px;
+    padding: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.popup-container.active {
+    opacity: 1;
+    pointer-events: auto;
+    transition: 0.4s ease;
+}
+
+
+
+.contact-us {
+    display: none;
+    justify-content: center;
+    position: fixed;
+    flex-wrap: wrap;
+    z-index: 999;
+    overflow: hidden;
+    width: 660px;
+    margin: 0 28px;
+    padding: 28px;
+    color: white;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.6);
+}
+
+.message-box {
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    min-height: 150px;
+}
+
+.contact-input-box {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.buttons {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+}
+
+.box {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 95%;
+    margin-top: -1%;
+}
+
+
 .Container {
+    align-self: center;
     max-width: 660px;
     padding: 28px;
     margin: 0 28px;
@@ -73,7 +160,8 @@ h2 {
     justify-content: end;
 }
 
-.input-box label {
+.input-box label,
+.contact-input-box label {
     width: 95%;
     color: white;
     font-weight: bold;
@@ -106,7 +194,8 @@ h2 {
     cursor: pointer;
 }
 
-.input-box input {
+.input-box input,
+.contact-input-box input {
     height: 40px;
     width: 95%;
     padding: 0 10px;
@@ -176,6 +265,7 @@ ul {
 }
 
 @media(max-height:800px) {
+
     body {
         height: auto;
     }
@@ -183,11 +273,14 @@ ul {
 
 
 @media(max-width:600px) {
-    .Container {
+
+    .Container,
+    .contact-us {
         min-width: 280px;
     }
 
-    .content {
+    .content,
+    .contact-us {
         max-height: 380px;
         overflow: auto;
     }
@@ -196,7 +289,8 @@ ul {
         width: 100%;
     }
 
-    .input-box {
+    .input-box,
+    .contact-us {
         margin-bottom: 12px;
         width: 100%;
     }

@@ -1,10 +1,16 @@
 
-var jsonDataScript = document.getElementById("json_data");
-var listings = JSON.parse(jsonDataScript.textContent);
-console.log(listings[0]);
+try {
+    var jsonDataScript = document.getElementById("json_data");
+    var listings = JSON.parse(jsonDataScript.textContent);
+    console.log(listings[0]);
+    var databaseType = document.getElementById("databaseType");
+    var dataType = JSON.parse(databaseType.textContent);
+}
 
-var databaseType = document.getElementById("databaseType");
-var dataType = JSON.parse(databaseType.textContent);
+catch (error) {
+    console.log("No jso file sent from backend");
+}
+
 
 let address = document.querySelector("#address");
 let maxfee = document.querySelector("#maxfee");
@@ -15,9 +21,98 @@ let maxarea = document.querySelector("#maxarea");
 let resultsDiv = document.querySelector("#results-div");
 let showAvergae = document.querySelector("#show-avergae");
 let fetchButton = document.querySelector("#fetch-button");
-let startDate = document.querySelector("#start-date")
-let endDate = document.querySelector("#end-date")
+let startDate = document.querySelector("#start-date");
+let endDate = document.querySelector("#end-date");
 
+let popUpContainer = document.querySelector("#popup-container")
+let contactUs = document.querySelectorAll("#contactus-btn");
+let privacy = document.querySelectorAll('#privacy-btn')
+let xBtn = document.querySelectorAll(".x-btn");
+let box = document.getElementById("box");
+
+let contactAtive = false
+let privacyActive = false
+
+contactUs[0].addEventListener('click', opdenHideContactUs);
+contactUs[1].addEventListener('click', opdenHideContactUs);
+privacy[0].addEventListener('click', opdenHidePrivacy);
+privacy[1].addEventListener('click', opdenHidePrivacy);
+privacy[2].addEventListener('click', opdenHidePrivacy);
+window.addEventListener("resize", adjustBodyBeightforPopup)
+
+fetchButton.addEventListener('click', showLoading); //Disable button while data is beeing downloaded
+
+
+function showLoading() {
+    fetchButton.textContent = "Fatching, please wait...";
+    setTimeout(function () {
+        fetchButton.classList.add("frozen");
+    });
+}
+
+function adjustBodyBeightforPopup() {
+
+    var mediaQuery = window.matchMedia('(max-height: 820px)')
+    if (contactAtive == true || privacyActive == true) {
+        document.body.style.height = "100vh";
+        if (mediaQuery.matches) {
+            document.body.style.height = "100vh";
+        }
+    }
+
+}
+
+
+function opdenHideContactUs() {
+    let contactUsPopUp = document.getElementById("contact-us");
+    if (contactUsPopUp.style.display == '' || contactUsPopUp.style.display == 'none') {
+        if (privacyActive == true) {
+            opdenHidePrivacy();
+        }
+        contactAtive = true;
+        adjustBodyBeightforPopup();
+        popUpContainer.classList.add('active');
+        contactUsPopUp.style.display = 'block';
+        box.style.display = 'none';
+
+    }
+    else {
+        document.body.style.height = "100vh";
+        console.log(document.body.style.height)
+        contactUsPopUp.style.display = 'none';
+        contactAtive = false;
+        popUpContainer.classList.remove('active');
+        try { displayResults(listings); }
+        catch (error) { }
+        box.style.display = 'flex';
+
+    }
+}
+
+function opdenHidePrivacy() {
+    let privacyPopUp = document.getElementById("privacy");
+    if (privacyPopUp.style.display == '' || privacyPopUp.style.display == 'none') {
+        if (contactAtive == true) {
+            opdenHideContactUs();
+        }
+        privacyActive = true;
+        adjustBodyBeightforPopup();
+        popUpContainer.classList.add('active');
+        privacyPopUp.style.display = 'block';
+        box.style.display = 'none';
+
+    }
+    else {
+        document.body.style.height = "100vh";
+        privacyPopUp.style.display = 'none';
+        privacyActive = false;
+        popUpContainer.classList.remove('active');
+        try { displayResults(listings); }
+        catch (error) { }
+        box.style.display = 'flex';
+
+    }
+}
 
 
 let locations = [];
